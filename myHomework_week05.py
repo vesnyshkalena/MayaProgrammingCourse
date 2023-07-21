@@ -11,19 +11,25 @@ class Rocket(object):
         
     def _creatParts(self):
 
+        grp = cmds.group(empty=1, n="MyRocket_Group")
+
         for i in range(self.bodyParts):
-            cmds.polyCylinder(name=self._getBodyPartName(i))
+            body = cmds.polyCylinder(name=self._getBodyPartName(i))
+
+            cmds.parent(body, grp)
 
         self.body_part_radius = cmds.polyCylinder(self._getBodyPartName(0), q=1, radius=1)
         self.body_part_height = cmds.polyCylinder(self._getBodyPartName(0), q=1, height=1)
 
         for i in range(self.fuelTanks):
         
-            cmds.polyCone(name=self._getFuelTankName(i), radius=self.body_part_radius*math.sin(math.pi / self.fuelTanks))
+            tank = cmds.polyCone(name=self._getFuelTankName(i), radius=self.body_part_radius*math.sin(math.pi / self.fuelTanks))
+            cmds.parent(tank, grp)
 
         self.fuel_tank_height = cmds.polyCone(self._getFuelTankName(0), q=1, height=1)
 
         self.nose_cone = cmds.polyCone(name="noseCone", height = self.noseConeHeight)
+        cmds.parent(self.nose_cone, grp)
         
 
     def generateModel(self):
@@ -52,5 +58,5 @@ class Rocket(object):
         return "bodyPart_{}".format(i)
 
     
-Rocket = Rocket (bodyParts = 4, noseConeHeight = 4, fuelTanks = 10)
-Rocket.generateModel()
+my_rocket = Rocket (bodyParts = 4, noseConeHeight = 4, fuelTanks = 10)
+my_rocket.generateModel()
